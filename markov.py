@@ -11,12 +11,13 @@ def open_and_read_file(source_text):
     the file's contents as one string of text.
     """
 
-    source_text = open(source_text).read()
+    with open(source_text) as file:
+        source_text = file.read()
 
     return source_text
 
 
-def make_chains(text_string):
+def make_chains(text_string, n):
     """Takes input text as string; returns dictionary of markov chains.
 
     A chain will be a key that consists of a tuple of (word1, word2)
@@ -31,31 +32,31 @@ def make_chains(text_string):
 
     chains = {}
     words = text_string.split()
-    for i in range(len(words) - 2):
-        if (words[i], words[i+1]) in chains:
-            chains[words[i], words[i+1]].append(words[i+2])
+    for i in range(len(words) - n):
+        key = tuple(words[i:i+n])
+        
+        if key in chains:
+            chains[key].append(words[i+n])
+
         else:
-            chains[words[i], words[i+1]] = [words[i+2]]
+            chains[key] = [words[i+n]]
 
     return chains
-    print chains
 
 def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
 
-    tuple_key = (choice(chains.keys()))
+    tuple_key = choice(chains.keys())
     text = " ".join(tuple_key)
 
     # for tuple_key in chains:
     #     if tuple_key in chains:
     while tuple_key in chains:
-        try:
+
             value = choice(chains[tuple_key])
             text = text + " " + value
-            tuple_key = (tuple_key[1], value)
-        except KeyError:
-            break
-        
+            tuple_key = tuple_key[1:] + (value,)
+
     return text
 
 # #input_path = "dracula.txt"
@@ -64,8 +65,7 @@ def make_text(chains):
 input_text = open_and_read_file(source_text)
 
 # # Get a Markov chain
-chains = make_chains(input_text)
-
+chains = make_chains(input_text, 3)
 # # Produce random text
 random_text = make_text(chains)
 print random_text    
