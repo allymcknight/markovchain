@@ -1,14 +1,17 @@
 from random import choice
 
+import sys
 
-def open_and_read_file(file_path):
+source_text = sys.argv[1]
+
+def open_and_read_file(source_text):
     """Takes file path as string; returns text as string.
 
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
 
-    source_text = open(file_path).read()
+    source_text = open(source_text).read()
 
     return source_text
 
@@ -51,18 +54,18 @@ def make_text(chains):
             text = text + " " + value
             tuple_key = (tuple_key[1], value)
         except KeyError:
-            break   
+            break
+        
     return text
 
-input_path = "dracula.txt"
+# #input_path = "dracula.txt"
 
-# Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
+# # Open the file and turn it into one long string
+input_text = open_and_read_file(source_text)
 
-# Get a Markov chain
+# # Get a Markov chain
 chains = make_chains(input_text)
 
-# Produce random text
+# # Produce random text
 random_text = make_text(chains)
-
-print random_text
+print random_text    
